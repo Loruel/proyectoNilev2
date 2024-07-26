@@ -23,6 +23,31 @@ const show = async (q, r) => {// #swagger.tags = ['Posts']
     }
 };
 
+//Mostrar post por id
+const showid = async (q, r) => {// #swagger.tags = ['Posts']
+    try {
+        const { params: { id } } = q
+        const sql =
+            `SELECT 
+        p.id_post, 
+        p.user_id AS post_user_id, 
+        p.category_id,
+        p.pos_title, 
+        p.post_content,
+        c.id_coments,
+        c.user_id AS coment_user_id,
+        c.coment_content 
+        FROM post p 
+        LEFT JOIN coments c 
+        ON p.id_post = c.post_id
+        WHERE id_post = ?`;
+        const [rs] = await pool.execute(sql, [id]);
+        r.status(200).json(rs);
+    } catch (error) {
+        r.status(error.status || 400).json({ error: error.massage });
+    }
+};
+
 //Crear un post
 const create = async (q, r) => {// #swagger.tags = ['Posts']
     try {
@@ -109,4 +134,4 @@ const showTitle = async (q, r) => {// #swagger.tags = ['Posts']
     }
 };
 
-export { show, create, update, destroy, showCategory, showTitle }
+export { show, showid, create, update, destroy, showCategory, showTitle }

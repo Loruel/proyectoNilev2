@@ -1,9 +1,11 @@
 import { Router } from "express";
-import { show, create, update, destroy, showCategory, showTitle } from "../controller/PostsController.js";
+import { show, showid, create, update, destroy, showCategory, showTitle } from "../controller/PostsController.js";
 
 export const postsRoutes = Router();
 
 postsRoutes.get('/', show);
+
+postsRoutes.get('/:id', showid);
 
 postsRoutes.post('/', create);
 

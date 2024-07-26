@@ -36,10 +36,7 @@ const create = async (q, r) => {// #swagger.tags = ['Users']
 //Editar usuario
 const update = async (q, r) => {// #swagger.tags = ['Users']
     try {
-        const { headers: { user_id }, body: { rol_id, user_name, user_email, user_password }, params: { id } } = q;
-        if (user_id !== id) {
-            throw { message: 'No puedes editar el perfil de otra persona', status: 401 };
-        };
+        const { body: { rol_id, user_name, user_email, user_password }, params: { id } } = q;
         const sql = "UPDATE users SET rol_id = ?, user_name = ?, user_email = ?, user_password = ? WHERE id_user = ?";
         await pool.execute(sql, [rol_id, user_name, user_email, user_password, id]);
         r.status(200).json({ message: 'Usuario editado satisfactoriamente' });
