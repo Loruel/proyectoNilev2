@@ -1,47 +1,34 @@
 import pool from "../db.js";
 
+//MOSTRAR POR ID
+const showid = async (q, r) => {// #swagger.tags = ['Posts']
+    try {
+        const { params: { id } } = q
+
+        const pruebapost = `SELECT * FROM post WHERE id_post = ?`
+        const pruebacomment = `SELECT * FROM coments WHERE post_id = ?`
+
+        const [postRs] = await pool.execute(pruebapost, [id]);
+        const [commentsRs] = await pool.execute(pruebacomment, [id]);
+
+        const rs = ({
+            post: postRs[0],
+            comments: commentsRs
+        });
+
+        r.status(200).json(rs);
+    } catch (error) {
+        r.status(error.status || 400).json({ error: error.message });
+    }
+};
+
+
 //Mostrar todos los posts
 const show = async (q, r) => {// #swagger.tags = ['Posts']
     try {
         const sql =
-            `SELECT 
-        p.id_post, 
-        p.user_id AS post_user_id, 
-        p.category_id,
-        p.pos_title, 
-        p.post_content,
-        c.id_coments,
-        c.user_id AS coment_user_id,
-        c.coment_content 
-        FROM post p 
-        LEFT JOIN coments c 
-        ON p.id_post = c.post_id`;
+            `SELECT * FROM post`;
         const [rs] = await pool.execute(sql);
-        r.status(200).json(rs);
-    } catch (error) {
-        r.status(error.status || 400).json({ error: error.massage });
-    }
-};
-
-//Mostrar post por id
-const showid = async (q, r) => {// #swagger.tags = ['Posts']
-    try {
-        const { params: { id } } = q
-        const sql =
-            `SELECT 
-        p.id_post, 
-        p.user_id AS post_user_id, 
-        p.category_id,
-        p.pos_title, 
-        p.post_content,
-        c.id_coments,
-        c.user_id AS coment_user_id,
-        c.coment_content 
-        FROM post p 
-        LEFT JOIN coments c 
-        ON p.id_post = c.post_id
-        WHERE id_post = ?`;
-        const [rs] = await pool.execute(sql, [id]);
         r.status(200).json(rs);
     } catch (error) {
         r.status(error.status || 400).json({ error: error.massage });
